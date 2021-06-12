@@ -1,5 +1,7 @@
 # tailscale-sidecar
 
+[![Publish docker image](https://github.com/markpash/tailscale-sidecar/actions/workflows/push-image.yml/badge.svg)](https://github.com/markpash/tailscale-sidecar/actions/workflows/push-image.yml)
+
 This is barely tested software, I don't guarantee it works but please make an issue if you use it and find a bug. Pull requests are welcome.
 
 This program is designed to expose services onto a tailscale network without needing root.
