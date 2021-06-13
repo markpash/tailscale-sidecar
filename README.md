@@ -10,6 +10,12 @@ The use-case for me was running this as a sidecar container in nomad to expose s
 
 Currently this only supports tcp because right now because that's all I care about. I may try to make UDP work in the future.
 
+Docker image available:
+
+```bash
+docker pull ghcr.io/markpash/tailscale-sidecar:latest
+```
+
 ## Usage
 
 To use this program, it needs to be executed with a few environment variables. They are as follows:
