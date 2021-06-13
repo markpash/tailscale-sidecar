@@ -68,12 +68,14 @@ func newTsNetServer() tsnet.Server {
 	}
 }
 
-func proxyBind(s tsnet.Server, b Binding) {
+func proxyBind(s *tsnet.Server, b *Binding) {
 	ln, err := s.Listen("tcp", fmt.Sprintf(":%d", b.From))
 	if err != nil {
 		log.Println(err)
 		return
 	}
+
+	log.Printf("started proxy bind from %d to %v", b.From, b.To)
 
 	for {
 		conn, err := ln.Accept()
@@ -130,7 +132,7 @@ func main() {
 		wg.Add(1)
 		go func(binding Binding) {
 			defer wg.Done()
-			proxyBind(s, binding)
+			proxyBind(&s, &binding)
 		}(binding)
 	}
 	wg.Wait()
