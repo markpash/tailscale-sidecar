@@ -52,7 +52,14 @@ func newTsNetServer() tsnet.Server {
 
 	stateDir := os.Getenv("TS_SIDECAR_STATEDIR")
 	if stateDir == "" {
-		stateDir = "./tsstate"
+		defaultDir := "./tsstate"
+		if _, err := os.Stat(defaultDir); os.IsNotExist(err) {
+			if err := os.Mkdir(defaultDir, 0755); err != nil {
+				panic("failed to create default state directory")
+			}
+		}
+
+		stateDir = defaultDir
 	}
 
 	return tsnet.Server{
