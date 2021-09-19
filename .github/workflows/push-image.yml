@@ -14,6 +14,6 @@ jobs:
           go-version: 1.16
       - uses: actions/checkout@v2
       - uses: imjasonh/setup-ko@v0.4
-      - run: ko publish -B ./
+      - run: ko publish -B --platform=linux/amd64,linux/arm64 ./
         env:
           KO_DOCKER_REPO: ghcr.io/${{ github.repository_owner }}
