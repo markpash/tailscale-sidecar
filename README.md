@@ -21,13 +21,13 @@ docker pull ghcr.io/markpash/tailscale-sidecar:latest
 To use this program, it needs to be executed with a few environment variables. They are as follows:
 
 ```bash
-TS_LOGIN
+TS_AUTHKEY
 TS_SIDECAR_STATEDIR
 TS_SIDECAR_NAME
 TS_SIDECAR_BINDINGS
 ```
 
-On first run, you should run with `TS_LOGIN` set to `1` as this will output a login url in the logs, which you can use to authorise this instance and create the state. Once the instance is authorised, the variable no longer needs to be provided.
+`TS_AUTHKEY` is now enabled for this project. You can provide this variable with a key, consult the tailscale documentation to determine the appropriate key to use. The old `TS_LOGIN` method still works, but it's not advised and it's not very convenient either.
 
 `TS_SIDECAR_STATEDIR` is the location where the persistent data for the sidecar will be stored. This is used to not need to re-authorise the instance. In a container setup, you'll want to have this persisted. The default path is `./tsstate`.
 
