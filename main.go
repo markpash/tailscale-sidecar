@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,12 +11,14 @@ import (
 	"os"
 	"sync"
 
+	"tailscale.com/client/tailscale"
 	"tailscale.com/tsnet"
 )
 
 type Binding struct {
 	From uint16 `json:"from"`
 	To   string `json:"to"`
+	Tls  bool   `json:"tls"`
 }
 
 func loadBindings() ([]Binding, error) {
@@ -52,14 +55,11 @@ func newTsNetServer() tsnet.Server {
 
 	stateDir := os.Getenv("TS_SIDECAR_STATEDIR")
 	if stateDir == "" {
-		defaultDir := "./tsstate"
-		if _, err := os.Stat(defaultDir); os.IsNotExist(err) {
-			if err := os.Mkdir(defaultDir, 0755); err != nil {
-				panic("failed to create default state directory")
-			}
-		}
+		stateDir = "./tsstate"
+	}
 
-		stateDir = defaultDir
+	if err := os.MkdirAll(stateDir, 0755); err != nil {
+		panic("failed to create default state directory")
 	}
 
 	return tsnet.Server{
@@ -75,7 +75,13 @@ func proxyBind(s *tsnet.Server, b *Binding) {
 		return
 	}
 
-	log.Printf("started proxy bind from %d to %v", b.From, b.To)
+	if b.Tls {
+		ln = tls.NewListener(ln, &tls.Config{
+			GetCertificate: tailscale.GetCertificate,
+		})
+	}
+
+	log.Printf("started proxy bind from %d to %v (tls: %t)", b.From, b.To, b.Tls)
 
 	for {
 		conn, err := ln.Accept()

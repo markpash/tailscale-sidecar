@@ -4,9 +4,7 @@
 
 This is barely tested software, I don't guarantee it works but please make an issue if you use it and find a bug. Pull requests are welcome.
 
-This program is designed to expose services onto a tailscale network without needing root.
-Using the `tsnet` package provided by tailscale, we can listen on a port on a tailscale IP and then proxy the stream to a destination.
-The use-case for me was running this as a sidecar container in nomad to expose services onto my tailscale network, without needing root or routing.
+This program is designed to expose services onto a tailscale network without needing root. Using the `tsnet` package provided by tailscale, we can listen on a port on a tailscale IP and then proxy the stream to a destination. The use-case for me was running this as a sidecar container in nomad to expose services onto my tailscale network, without needing root or routing.
 
 Currently this only supports tcp because right now because that's all I care about. I may try to make UDP work in the future.
 
@@ -29,7 +27,9 @@ TS_SIDECAR_BINDINGS
 
 `TS_AUTHKEY` is now enabled for this project. You can provide this variable with a key, consult the tailscale documentation to determine the appropriate key to use. The old `TS_LOGIN` method still works, but it's not advised and it's not very convenient either.
 
-`TS_SIDECAR_STATEDIR` is the location where the persistent data for the sidecar will be stored. This is used to not need to re-authorise the instance. In a container setup, you'll want to have this persisted. The default path is `./tsstate`.
+`TS_SIDECAR_STATEDIR` is the location where the persistent data for the sidecar will be stored. This is used to not need to re-authorise the instance. In a container setup, you'll want to have this persisted. The default is `./tsstate`, which will result in Tailscale using `home/nonroot/tsstate` in the Docker container.
+
+⚠ Tailscale will not use the specified state directory to store the TLS certificates. When using the Docker container, you should mount `home/nonroot/.local/share/tailscale`.
 
 `TS_SIDECAR_NAME` is the name that you wish this program to use to present itself to the tailscale servers, this is what you will see in your panel.
 
@@ -43,8 +43,9 @@ Configuration should look like this:
 ```json
 [
     {
-        "from": 80,
-        "to": "127.0.0.1:8000"
+        "from": 443,
+        "to": "127.0.0.1:8000",
+        "tls": true
     }
 ]
 ```
