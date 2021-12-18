@@ -26,7 +26,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: imjasonh/setup-ko@v0.4
       - run: |
-          ko publish -B --platform=linux/amd64,linux/arm64 \
+          ko publish --bare --platform=linux/amd64,linux/arm64 \
           --tags=latest,$(git describe --tag --always --dirty) ./
-        env:
-          KO_DOCKER_REPO: ghcr.io/${{ github.repository_owner }}
