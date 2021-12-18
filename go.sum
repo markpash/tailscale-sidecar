@@ -266,5 +266,5 @@ inet.af/netstack v0.0.0-20211101182044-1c1bcf452982/go.mod h1:fG3G1dekmK8oDX3iVz
 nhooyr.io/websocket v1.8.7 h1:usjR2uOr/zjjkVMy0lW+PPohFok7PCow5sDjLgX4P4g=
 nhooyr.io/websocket v1.8.7/go.mod h1:B70DZP8IakI65RVQ51MsWP/8jndNma26DVA/nFSCgW0=
 software.sslmate.com/src/go-pkcs12 v0.0.0-20180114231543-2291e8f0f237 h1:iAEkCBPbRaflBgZ7o9gjVUuWuvWeV4sytFWg9o+Pj2k=
-tailscale.com v1.18.0 h1:riytbiTTxaglL9an6VrD03xWvPOPN8vD3VOFOvdB3Io=
-tailscale.com v1.18.0/go.mod h1:XzG4o2vtYFkVvmJWPaTGSaOzqlKSRx2WU+aJbrxaVE0=
+tailscale.com v1.18.1 h1:3hkMsdpREdz2w0O3YcmOgJkl95ChTT4Dje7wq8prD/E=
+tailscale.com v1.18.1/go.mod h1:XzG4o2vtYFkVvmJWPaTGSaOzqlKSRx2WU+aJbrxaVE0=
