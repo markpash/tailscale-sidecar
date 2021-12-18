@@ -2,7 +2,7 @@ module github.com/markpash/tailscale-sidecar
 
 go 1.17
 
-require tailscale.com v1.16.1
+require tailscale.com v1.16.2
 
 require (
 	github.com/alexbrainman/sspi v0.0.0-20210105120005-909beea2cc74 // indirect
