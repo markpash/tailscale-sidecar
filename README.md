@@ -1,8 +1,6 @@
 # tailscale-sidecar
 
-[![Publish docker image](https://github.com/markpash/tailscale-sidecar/actions/workflows/push-image.yml/badge.svg)](https://github.com/markpash/tailscale-sidecar/actions/workflows/push-image.yml)
-
-This is barely tested software, I don't guarantee it works but please make an issue if you use it and find a bug. Pull requests are welcome.
+[![checks](https://github.com/markpash/tailscale-sidecar/actions/workflows/checks.yml/badge.svg)](https://github.com/markpash/tailscale-sidecar/actions/workflows/checks.yml)
 
 This program is designed to expose services onto a tailscale network without needing root. Using the `tsnet` package provided by tailscale, we can listen on a port on a tailscale IP and then proxy the stream to a destination. The use-case for me was running this as a sidecar container in nomad to expose services onto my tailscale network, without needing root or routing.
 
@@ -13,6 +11,8 @@ Docker image available:
 ```bash
 docker pull ghcr.io/markpash/tailscale-sidecar:latest
 ```
+
+Versions of this software track the versions of upstream tailscale. Any features added to this software will be released when the next version of tailscale is released.
 
 ## Usage
 
