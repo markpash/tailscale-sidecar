@@ -2,7 +2,7 @@ module github.com/markpash/tailscale-sidecar
 
 go 1.17
 
-require tailscale.com v1.18.1
+require tailscale.com v1.18.2
 
 require (
 	github.com/akutz/memconn v0.1.0 // indirect
