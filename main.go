@@ -131,11 +131,14 @@ func serveHTTP(b *Binding, ln net.Listener) {
 
 	log.Printf("started proxy bind from %d to %v (tls: %t)", b.From, uri.String(), b.Tls)
 
+	mux := http.NewServeMux()
+
 	// handle all requests to your server using the proxy
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		proxy.ServeHTTP(w, r)
 	})
-	err = http.Serve(ln, nil)
+
+	err = http.Serve(ln, mux)
 	if err != nil {
 		log.Println(err)
 	}
