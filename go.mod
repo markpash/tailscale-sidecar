@@ -2,7 +2,7 @@ module github.com/markpash/tailscale-sidecar
 
 go 1.17
 
-require tailscale.com v1.20.3
+require tailscale.com v1.20.4
 
 require (
 	github.com/BurntSushi/toml v0.4.1 // indirect
