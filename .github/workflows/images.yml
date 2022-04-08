@@ -2,7 +2,7 @@ name: images
 
 on:
   push:
-    branches: ['*']
+    branches: ['**']
 
 permissions:
   contents: write
