@@ -3,7 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"encoding/json"
-	"errors"
+	"flag"
 	"fmt"
 	"io"
 	"log"
@@ -11,6 +11,7 @@ import (
 	"os"
 	"sync"
 
+	"golang.org/x/sync/errgroup"
 	"tailscale.com/client/tailscale"
 	"tailscale.com/tsnet"
 )
@@ -40,9 +41,9 @@ func loadBindings() ([]Binding, error) {
 		return nil, err
 	}
 
-	if len(bindings) == 0 {
-		return nil, errors.New("bindings empty")
-	}
+	// if len(bindings) == 0 {
+	// 	return nil, errors.New("bindings empty")
+	// }
 
 	return bindings, nil
 }
@@ -126,20 +127,38 @@ func main() {
 		panic(err)
 	}
 
+	proxyToTailnet := flag.Bool("proxy-to-tailnet", false, "EXPERIMENTAL: flag to enable proxying into the tailnet with socks and http proxies")
+	socksAddr := flag.String("socksproxy", "localhost:1080", "set the address for socks proxy to listen on")
+	httpProxyAddr := flag.String("httpproxy", "localhost:8080", "set the address for http proxy to listen on")
+	flag.Parse()
+
 	bindings, err := loadBindings()
 	if err != nil {
 		panic(err)
 	}
 
 	s := newTsNetServer()
-
-	var wg sync.WaitGroup
-	for _, binding := range bindings {
-		wg.Add(1)
-		go func(binding Binding) {
-			defer wg.Done()
-			proxyBind(&s, &binding)
-		}(binding)
+	if err := s.Start(); err != nil {
+		panic(err)
 	}
-	wg.Wait()
+
+	eg := errgroup.Group{}
+
+	if *proxyToTailnet {
+		eg.Go(func() error {
+			return runProxies(&s, *socksAddr, *httpProxyAddr)
+		})
+	}
+
+	for _, binding := range bindings {
+		binding := binding
+		eg.Go(func() error {
+			proxyBind(&s, &binding)
+			return nil
+		})
+	}
+
+	if err := eg.Wait(); err != nil {
+		panic(err)
+	}
 }
