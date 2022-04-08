@@ -8,6 +8,9 @@ import (
 	"io"
 	"log"
 	"net"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"sync"
 
@@ -16,9 +19,16 @@ import (
 )
 
 type Binding struct {
-	From uint16 `json:"from"`
-	To   string `json:"to"`
-	Tls  bool   `json:"tls"`
+	From     uint16       `json:"from"`
+	To       string       `json:"to"`
+	Tls      bool         `json:"tls"`
+	Protocol string       `json:"protocol"`
+	Http     *HttpBinding `json:"http"`
+}
+
+type HttpBinding struct {
+	Host    string            `json:"host"`
+	Headers map[string]string `json:"headers"`
 }
 
 func loadBindings() ([]Binding, error) {
@@ -81,6 +91,60 @@ func proxyBind(s *tsnet.Server, b *Binding) {
 		})
 	}
 
+	if b.Protocol == "http" {
+		serveHTTP(b, ln)
+	} else if b.Protocol == "tcp" || b.Protocol == "" {
+		serveTCP(b, ln)
+	} else {
+		log.Printf("unknown protocol %q", b.Protocol)
+	}
+
+}
+
+func serveHTTP(b *Binding, ln net.Listener) {
+	uri, err := url.Parse(b.To)
+	if err != nil {
+		var err2 error
+		uri, err2 = url.Parse("http://" + b.To)
+		if err2 != nil {
+			log.Println(err)
+			return
+		}
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(uri)
+
+	if b.Http != nil {
+		originalDirector := proxy.Director
+		proxy.Director = func(req *http.Request) {
+			originalDirector(req)
+
+			for k, v := range b.Http.Headers {
+				req.Header.Set(k, v)
+			}
+
+			if b.Http.Host != "" {
+				req.Host = b.Http.Host
+			}
+		}
+	}
+
+	log.Printf("started proxy bind from %d to %v (tls: %t)", b.From, uri.String(), b.Tls)
+
+	mux := http.NewServeMux()
+
+	// handle all requests to your server using the proxy
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		proxy.ServeHTTP(w, r)
+	})
+
+	err = http.Serve(ln, mux)
+	if err != nil {
+		log.Println(err)
+	}
+}
+
+func serveTCP(b *Binding, ln net.Listener) {
 	log.Printf("started proxy bind from %d to %v (tls: %t)", b.From, b.To, b.Tls)
 
 	for {

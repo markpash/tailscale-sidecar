@@ -50,6 +50,26 @@ Configuration should look like this:
 ]
 ```
 
+There is also support for HTTP proxying:
+
+```json
+[
+    {
+        "from": 443,
+        "to": "http://127.0.0.1:8000/",
+        "tls": true,
+        "protocol": "http",
+        "http": {
+            "host": "localhost",
+            "headers": {
+                "User-Agent": "SomeAgent/2.0"
+            }
+        }
+    }
+]
+```
+
+
 ## Disclaimer
 
 THIS IS NOT OFFICIALLY ENDORSED BY TAILSCALE.
