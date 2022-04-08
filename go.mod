@@ -1,6 +1,6 @@
 module github.com/markpash/tailscale-sidecar
 
-go 1.17
+go 1.18
 
 require tailscale.com v1.22.2
 

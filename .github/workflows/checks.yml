@@ -15,7 +15,7 @@ jobs:
           fetch-depth: 0
       - uses: WillAbides/setup-go-faster@v1.7.0
         with:
-          go-version: 1.17
+          go-version: 1.18
       - run: go install mvdan.cc/gofumpt@latest
       - run: test -z $(gofumpt -l .)
       - run: go vet ./...
