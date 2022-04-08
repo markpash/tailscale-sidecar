@@ -1,0 +1,24 @@
+name: images
+
+on:
+  push:
+    branches: ['*']
+
+permissions:
+  contents: write
+  packages: write
+
+jobs:
+  images:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - uses: WillAbides/setup-go-faster@v1.7.0
+        with:
+          go-version: 1.18
+      - uses: imjasonh/setup-ko@v0.4
+      - run: |
+          ko publish --bare --platform=linux/amd64,linux/arm64 \
+          --tags=$(git describe --tag --always --dirty) ./
