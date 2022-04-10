@@ -2,7 +2,10 @@ module github.com/markpash/tailscale-sidecar
 
 go 1.18
 
-require tailscale.com v1.22.2
+require (
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
+	tailscale.com v1.22.2
+)
 
 require (
 	github.com/akutz/memconn v0.1.0 // indirect
@@ -37,7 +40,6 @@ require (
 	go4.org/unsafe/assume-no-moving-gc v0.0.0-20211027215541-db492cf91b37 // indirect
 	golang.org/x/crypto v0.0.0-20211202192323-5770296d904e // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	golang.org/x/time v0.0.0-20211116232009-f0f3c7e86c11 // indirect
